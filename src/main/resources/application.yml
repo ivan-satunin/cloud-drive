@@ -1,0 +1,22 @@
+minio:
+  user:
+    bucket: user-files
+  client:
+    endpoint: ${MINIO_CLIENT_ENDPOINT:http://127.0.0.1:9000}
+    accessKey: ${MINIO_ROOT_USER}
+    secretKey: ${MINIO_ROOT_PASSWORD}
+
+spring:
+  application:
+    name: cloud-drive
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  docker:
+    compose:
+      lifecycle-management: start_and_stop
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
