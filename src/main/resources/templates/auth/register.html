@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link th:replace="~{fragments/bootstrap :: css}"/>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center" style="width: 300vh; height: 100vh">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" th:action="@{/cloud-drive/register}" th:object="${user}">
+                <div class="mb-3">
+                    <label class="form-label" for="inputUsername">Username</label>
+                    <input th:field="*{username}" type="text" class="form-control" id="inputUsername" required>
+                    <!--                           placeholder="Username" -->
+                    <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="inputEmail">Email</label>
+                    <input th:field="*{email}" type="email" class="form-control" id="inputEmail" required>
+                    <!--                           placeholder="Email"-->
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="inputPassword">Password</label>
+                    <input th:field="*{password}" type="password" class="form-control" id="inputPassword" required>
+                    <!--                           placeholder="Password"-->
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></p>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 rounded-3">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

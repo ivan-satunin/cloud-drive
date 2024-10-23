@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link th:replace="~{fragments/bootstrap :: css}">
+</head>
+<body>
+
+<div class="container d-flex justify-content-center align-items-center" style="width: 300vh; height: 100vh">
+    <div class="card">
+        <div class="card-body">
+            <form method="post" th:action="@{/cloud-drive/login}">
+                <div class="mb-3">
+                    <label for="inputUsername" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="inputUsername" name="username">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="inputPassword" name="password">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 rounded-3">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
