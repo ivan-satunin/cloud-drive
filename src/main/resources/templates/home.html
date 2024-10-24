@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link th:replace="~{fragments/bootstrap :: css}">
+    <link th:replace="~{fragments/bootstrap :: icons}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/common :: header}"></nav>
+
+<div class="container-fluid ms-3">
+    <div class="row flex-nowrap">
+        <div class="col-auto" style="width: 250px;">
+            <ul class="nav flex-column gap-3">
+                <li class="nav-item">
+                    <form method="post" th:action="@{/cloud-drive/upload}" enctype="multipart/form-data"
+                          id="uploadFileForm">
+                        <input type="file" name="files" class="d-none" id="uploadFileInput" multiple>
+                        <input type="text" name="path" class="d-none" th:if="${param.get('path') != null}"
+                               th:value="${param.get('path')}">
+                        <button type="submit" class="d-none"></button>
+                        <button type="button" id="chooseFileBtn" class="btn btn-primary w-100">Upload file</button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <form method="post" th:action="@{/cloud-drive/upload}" enctype="multipart/form-data"
+                          id="uploadFolderForm">
+                        <input type="file" id="uploadFolderInput" name="files" class="d-none" webkitdirectory
+                               multiple>
+                        <input type="text" name="path" class="d-none" th:if="${param.get('path') != null}"
+                               th:value="${param.get('path')}">
+                        <button type="submit" class="d-none"></button>
+                        <button type="button" id="chooseFolderBtn" class="btn btn-primary w-100">Upload folder</button>
+                    </form>
+                </li>
+                <li class="nav-item" th:if="${usedSpace != null}">
+                    <span class="fs-4" th:text="${'Used ' + usedSpace}"></span>
+                </li>
+            </ul>
+        </div>
+        <div class="container-fluid ms-5" th:if="${#authentication != null && #authentication.isAuthenticated()}">
+            <div class="row">
+                <form class="d-flex" role="search" method="get" th:action="@{/cloud-drive/search}">
+                    <div class="input-group w-25">
+                        <input type="search" name="q" class="form-control me-2" placeholder="Search">
+                        <button type="submit" class="btn btn-outline-success">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <p class="fs-2 text-primary mt-3">Folders</p>
+            </div>
+            <!--Folders-->
+            <div class="row d-flex flex-wrap gap-2">
+                <div class="card shadow-sm rounded-3 w-auto" th:each="folder : ${folders}">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="bi bi-folder me-2 fs-4"></i>
+                        <a th:href="@{'/cloud-drive?path=' + ${folder.path()}}"
+                           class="fs-5 me-4 stretched-link text-dark text-decoration-none"
+                           th:text="${folder.name()}"></a>
+                        <div class="dropdown" style="z-index: 1;">
+                            <button class="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
+                                    style="width: 25px; height: 25px; padding: 0;"
+                                    data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <button class="btn dropdown-item" data-bs-toggle="modal"
+                                            data-bs-target="#renameFolderModal"
+                                            th:data-folderOldName="${folder.name()}"
+                                            th:data-folderLocation="${folder.location()}">
+                                        Rename
+                                    </button>
+                                </li>
+                                <li>
+                                    <form method="get" th:action="@{/cloud-drive/folders}">
+                                        <input type="hidden" th:name="path" th:value="${folder.path()}">
+                                        <button type="submit" class="btn dropdown-item">Download</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form th:method="delete" th:action="@{/cloud-drive/folders}">
+                                        <input type="hidden" th:name="path" th:value="${folder.path()}">
+                                        <button type="submit" class="btn dropdown-item">
+                                            <i class="bi bi-trash"></i>&nbsp;Delete
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <p class="fs-2 text-primary mt-3">Files</p>
+            </div>
+            <div class="row" th:if="${!files.isEmpty()}">
+                <table class="table table-hover w-75">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Size</th>
+                        <th scope="col">Last modified</th>
+                        <!--                        <th scope="col">Location</th>-->
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="fs-6" th:each="file : ${files}">
+                        <th>
+                            <i class="bi bi-file-earmark-text h-100 me-1"></i>
+                        </th>
+                        <td th:text="${file.name()}"></td>
+                        <td th:text="${file.size()}"></td>
+                        <td th:text="${#temporals.format(file.lastModified(), 'EEE, MMM d yyyy HH:mm (O)')}"></td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary rounded-circle d-flex justify-content-center align-items-center"
+                                        style="width: 25px; height: 25px; padding: 0;"
+                                        data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button class="btn dropdown-item" data-bs-toggle="modal"
+                                                data-bs-target="#renameFileModal"
+                                                th:data-fileOldName="${file.name()}"
+                                                th:data-fileLocation="${file.location()}"
+                                        >Rename
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <form method="get" th:action="@{/cloud-drive/files}">
+                                            <input type="hidden" name="path" th:value="${file.path()}">
+                                            <input type="hidden" name="filename" th:value="${file.name()}">
+                                            <button type="submit" class="btn dropdown-item">Download</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <form th:method="delete" th:action="@{/cloud-drive/files}">
+                                            <input type="hidden" th:name="path" th:value="${file.path()}">
+                                            <button type="submit" class="dropdown-item btn">
+                                                <i class="bi bi-trash"></i>&nbsp;Delete
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:replace="~{fragments/modal/rename :: fileModal}"></div>
+            <div th:replace="~{fragments/modal/rename :: folderModal}"></div>
+        </div>
+    </div>
+    <div th:if="${files != null && files.isEmpty()}">
+        <div class="d-flex flex-column align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-bag"
+                 viewBox="0 0 16 16">
+                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+            </svg>
+            <p class="text-center fs-4 mt-3">Start uploading files</p>
+        </div>
+    </div>
+    <div th:if="${#authentication eq null || !#authentication.isAuthenticated()}">
+        <div class="d-flex flex-column align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-house-fill"
+                 viewBox="0 0 16 16">
+                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+                <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z"/>
+            </svg>
+            <p class="text-center fs-4 mt-3">Please, login to your home</p>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/bootstrap :: js}"></div>
+
+</body>
+</html>
