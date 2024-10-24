@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<div class="modal fade" id="renameFileModal" tabindex="-1" role="dialog"
+     aria-labelledby="renameFileModalTitle" aria-hidden="true" th:fragment="fileModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="renameFileModalTitle">Rename</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:method="patch" th:action="@{/cloud-drive/files}"
+                      id="renameFileForm" th:object="${renameFilePayload}">
+                    <input type="text" th:name="location" id="fileLocationInput" hidden="hidden">
+                    <input type="text" th:name="oldName" id="oldFileNameInput" hidden="hidden">
+                    <input type="text" th:name="newName" id="newFileNameInput" class="form-control"
+                           th:field="*{newName}" pattern="^(?!\.)[a-zA-Z0-9.-]+(?<![/.])$" required>
+                    <div class="invalid-tooltip">
+                        The name cannot contain characters / \ .
+                    </div>
+                    <p th:if="${#fields.hasErrors('newName')}" th:errors="${#fields.errors('newName')}"
+                       class="text-danger"></p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="renameFileBtn" form="renameFileForm"
+                        class="btn btn-primary rounded-pill mt-2">OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="renameFolderModal" tabindex="-1" role="dialog"
+     aria-labelledby="renameFolderModalTitle" aria-hidden="true" th:fragment="folderModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="renameFolderModalTitle">Rename</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:method="patch" th:action="@{/cloud-drive/folders}" id="renameFolderForm"
+                      th:object="${renameFolderPayload}">
+                    <input type="text" th:name="location" id="folderLocationInput" hidden="hidden">
+                    <input type="text" th:name="oldName" id="oldFolderNameInput" hidden="hidden">
+                    <input type="text" class="form-control" th:name="newName" id="newFolderNameInput"
+                           th:field="*{newName}">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="renameFolderForm"
+                        class="btn btn-primary rounded-pill mt-2">OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
