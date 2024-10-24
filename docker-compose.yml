@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  database:
+    image: "postgres:alpine"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_DB=${PG_DB}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+  minio:
+    image: quay.io/minio/minio
+    volumes:
+      - ~/data/minio:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    command: server /data --console-address ":9001"
