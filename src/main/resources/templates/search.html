@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search results</title>
+    <link th:replace="~{fragments/bootstrap :: css}">
+    <link th:replcae="~{fragments/bootstrap :: icons}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/common :: header}"></nav>
+
+<div class="container-fluid ms-3">
+    <div class="row">
+        <form class="d-flex justify-content-center" role="search">
+            <div class="input-group w-25">
+                <input type="search" name="q" class="form-control me-2" placeholder="Search">
+                <button type="submit" class="btn btn-outline-success">Search</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <p class="fs-2 text-primary mt-3">Results</p>
+
+        <div th:if="${!folderResults.isEmpty()}">
+            <p class="fs-3 text-center">Folders</p>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <div class="card shadow-sm rounded-3" th:each="folderResult : ${folderResults}">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="bi bi-folder me-2 fs-4"></i>
+                        <a th:href="@{'/cloud-drive?path=' + ${folderResult.path()}}"
+                           th:text="${folderResult.path()}"
+                           class="fs-5 me-4 stretched-link text-dark text-decoration-none"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${!fileResults.isEmpty()}">
+            <p class="fs-3 text-center">Files</p>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <div class="card shadow-sm rounded-3" th:each="fileResult : ${fileResults}">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="bi bi-file-earmark-text h-100 me-1"></i>
+                        <a th:href="@{'/cloud-drive?path=' + ${fileResult.location()}}"
+                           th:text="${fileResult.name()}"
+                           class="fs-5 me-4 stretched-link text-dark text-decoration-none"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${folderResults.isEmpty() && fileResults.isEmpty()}">
+        <div class="row d-flex flex-column align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg>
+            <p class="text-center fs-4 mt-3">Nothing found</p>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/bootstrap :: js}"></div>
+
+</body>
+</html>
