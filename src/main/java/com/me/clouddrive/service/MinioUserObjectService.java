@@ -2,7 +2,7 @@ package com.me.clouddrive.service;
 
 import com.me.clouddrive.dto.SaveFileArgs;
 import com.me.clouddrive.exception.file.DeleteFileException;
-import com.me.clouddrive.path.PathBuilder;
+import com.me.clouddrive.utils.PathBuilder;
 import com.me.clouddrive.utils.PathUtils;
 import io.minio.*;
 import io.minio.messages.DeleteObject;
