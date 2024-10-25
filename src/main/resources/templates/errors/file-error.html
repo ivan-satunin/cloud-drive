@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link th:replace="~{fragments/bootstrap :: css}">
+</head>
+<body>
+<div class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <span class="text-center badge text-bg-danger text-wrap fs-3" th:text="${message}"></span>
+        <a th:href="@{/cloud-drive}">, back to home</a>
+    </div>
+</div>
+</body>
+</html>
